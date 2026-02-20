@@ -87,38 +87,6 @@
             margin-top: 20px;
             text-align: right;
         }
-
-        @media (max-width: 768px) {
-            table, thead, tbody, th, td, tr {
-                display: block;
-                width: 100%;
-            }
-
-            th {
-                display: none;
-            }
-
-            tr {
-                margin-bottom: 15px;
-                background: #fafafa;
-                padding: 10px;
-                border-radius: 8px;
-                box-shadow: 0 4px 10px rgba(0,0,0,0.05);
-            }
-
-            td {
-                text-align: right;
-                padding: 6px;
-                position: relative;
-            }
-
-            td::before {
-                content: attr(data-label);
-                position: absolute;
-                left: 10px;
-                font-weight: bold;
-            }
-        }
     </style>
 </head>
 
@@ -152,16 +120,31 @@ function addRow() {
     let row = table.insertRow(-1);
 
     row.innerHTML = `
-        <td data-label="Room Name"><input type="text" placeholder="Room Name"></td>
-        <td data-label="Length Ft"><input type="number" value="0" onchange="calculate()"></td>
-        <td data-label="Length In"><input type="number" value="0" onchange="calculate()"></td>
-        <td data-label="Width Ft"><input type="number" value="0" onchange="calculate()"></td>
-        <td data-label="Width In"><input type="number" value="0" onchange="calculate()"></td>
-        <td data-label="Area (Sqft)" class="area">0</td>
-        <td data-label="Action">
+        <td><input type="text" placeholder="Room Name"></td>
+
+        <td><input type="number" oninput="moveNext(this)" onchange="calculate()"></td>
+
+        <td><input type="number" onchange="calculate()"></td>
+
+        <td><input type="number" oninput="moveNext(this)" onchange="calculate()"></td>
+
+        <td><input type="number" onchange="calculate()"></td>
+
+        <td class="area">0</td>
+
+        <td>
             <button class="delete-btn" onclick="deleteRow(this)">Delete</button>
         </td>
     `;
+}
+
+function moveNext(input) {
+    if (input.value.length >= 1) {
+        let next = input.parentElement.nextElementSibling.querySelector("input");
+        if (next) {
+            next.focus();
+        }
+    }
 }
 
 function calculate() {
