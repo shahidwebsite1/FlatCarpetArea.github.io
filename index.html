@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Carpet Area Calculator</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Segoe UI', sans-serif;
+            background: #ffffff;
+            display: flex;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: #ffffff;
+            width: 100%;
+            max-width: 1000px;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+        }
+
+        h2 {
+            text-align: center;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        button {
+            padding: 8px 15px;
+            border: none;
+            border-radius: 6px;
+            background: #444;
+            color: white;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        button:hover {
+            background: #222;
+        }
+
+        .delete-btn {
+            background: #d9534f;
+        }
+
+        .delete-btn:hover {
+            background: #b52b27;
+        }
+
+        table {
+            width: 100%;
+            margin-top: 20px;
+            border-collapse: collapse;
+        }
+
+        th {
+            background: #f2f2f2;
+            padding: 10px;
+            font-size: 14px;
+        }
+
+        td {
+            padding: 8px;
+            text-align: center;
+            border-bottom: 1px solid #eee;
+        }
+
+        input {
+            width: 70px;
+            padding: 5px;
+            border-radius: 4px;
+            border: 1px solid #ccc;
+            text-align: center;
+        }
+
+        input[type="text"] {
+            width: 120px;
+        }
+
+        .total {
+            font-size: 20px;
+            font-weight: bold;
+            margin-top: 20px;
+            text-align: right;
+        }
+
+        @media (max-width: 768px) {
+            table, thead, tbody, th, td, tr {
+                display: block;
+                width: 100%;
+            }
+
+            th {
+                display: none;
+            }
+
+            tr {
+                margin-bottom: 15px;
+                background: #fafafa;
+                padding: 10px;
+                border-radius: 8px;
+                box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+            }
+
+            td {
+                text-align: right;
+                padding: 6px;
+                position: relative;
+            }
+
+            td::before {
+                content: attr(data-label);
+                position: absolute;
+                left: 10px;
+                font-weight: bold;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+    <h2>Carpet Area Calculator (Feet & Inch)</h2>
+
+    <button onclick="addRow()">+ Add Room</button>
+
+    <table id="roomTable">
+        <tr>
+            <th>Room Name</th>
+            <th>Length (Ft)</th>
+            <th>Length (In)</th>
+            <th>Width (Ft)</th>
+            <th>Width (In)</th>
+            <th>Area (Sqft)</th>
+            <th>Action</th>
+        </tr>
+    </table>
+
+    <div class="total">
+        Total Area: <span id="totalArea">0</span> Sqft
+    </div>
+</div>
+
+<script>
+function addRow() {
+    let table = document.getElementById("roomTable");
+    let row = table.insertRow(-1);
+
+    row.innerHTML = `
+        <td data-label="Room Name"><input type="text" placeholder="Room Name"></td>
+        <td data-label="Length Ft"><input type="number" value="0" onchange="calculate()"></td>
+        <td data-label="Length In"><input type="number" value="0" onchange="calculate()"></td>
+        <td data-label="Width Ft"><input type="number" value="0" onchange="calculate()"></td>
+        <td data-label="Width In"><input type="number" value="0" onchange="calculate()"></td>
+        <td data-label="Area (Sqft)" class="area">0</td>
+        <td data-label="Action">
+            <button class="delete-btn" onclick="deleteRow(this)">Delete</button>
+        </td>
+    `;
+}
+
+function calculate() {
+    let table = document.getElementById("roomTable");
+    let total = 0;
+
+    for (let i = 1; i < table.rows.length; i++) {
+        let cells = table.rows[i].cells;
+
+        let lf = parseFloat(cells[1].children[0].value) || 0;
+        let li = parseFloat(cells[2].children[0].value) || 0;
+        let wf = parseFloat(cells[3].children[0].value) || 0;
+        let wi = parseFloat(cells[4].children[0].value) || 0;
+
+        let length = lf + (li / 12);
+        let width = wf + (wi / 12);
+
+        let area = length * width;
+
+        cells[5].innerText = area.toFixed(2);
+        total += area;
+    }
+
+    document.getElementById("totalArea").innerText = total.toFixed(2);
+}
+
+function deleteRow(button) {
+    let row = button.parentElement.parentElement;
+    row.remove();
+    calculate();
+}
+</script>
+
+</body>
+</html>
