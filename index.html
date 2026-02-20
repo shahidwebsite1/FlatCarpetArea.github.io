@@ -9,16 +9,15 @@
             margin: 0;
             font-family: 'Segoe UI', sans-serif;
             background: #ffffff;
-            display: flex;
-            justify-content: center;
-            padding: 20px;
+            padding: 15px;
         }
 
         .container {
             background: #ffffff;
             width: 100%;
             max-width: 1000px;
-            padding: 25px;
+            margin: auto;
+            padding: 20px;
             border-radius: 12px;
             box-shadow: 0 8px 20px rgba(0,0,0,0.1);
         }
@@ -29,12 +28,167 @@
             color: #333;
         }
 
-        button {
-            padding: 8px 15px;
+        .add-btn {
+            padding: 10px;
             border: none;
             border-radius: 6px;
             background: #444;
             color: white;
             cursor: pointer;
-            transition: 0.3s;
+            width: 100%;
         }
+
+        .add-btn:hover {
+            background: #222;
+        }
+
+        .delete-btn {
+            background: #d9534f;
+            color: white;
+            border: none;
+            padding: 6px 10px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .delete-btn:hover {
+            background: #b52b27;
+        }
+
+        .table-wrapper {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            min-width: 700px;
+            margin-top: 20px;
+            border-collapse: collapse;
+        }
+
+        th {
+            background: #f2f2f2;
+            padding: 10px;
+            font-size: 14px;
+        }
+
+        td {
+            padding: 8px;
+            text-align: center;
+            border-bottom: 1px solid #eee;
+        }
+
+        input {
+            width: 60px;
+            padding: 5px;
+            border-radius: 4px;
+            border: 1px solid #ccc;
+            text-align: center;
+        }
+
+        input[type="text"] {
+            width: 100px;
+        }
+
+        .total {
+            font-size: 18px;
+            font-weight: bold;
+            margin-top: 20px;
+            text-align: right;
+        }
+
+        /* Mobile Styling */
+        @media (max-width: 768px) {
+            .container {
+                padding: 15px;
+            }
+
+            h2 {
+                font-size: 18px;
+            }
+
+            input {
+                width: 55px;
+            }
+
+            input[type="text"] {
+                width: 90px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+    <h2>Carpet Area Calculator (Feet & Inch)</h2>
+
+    <button class="add-btn" onclick="addRow()">+ Add Room</button>
+
+    <div class="table-wrapper">
+        <table id="roomTable">
+            <tr>
+                <th>Room Name</th>
+                <th>Length (Ft)</th>
+                <th>Length (In)</th>
+                <th>Width (Ft)</th>
+                <th>Width (In)</th>
+                <th>Area (Sqft)</th>
+                <th>Action</th>
+            </tr>
+        </table>
+    </div>
+
+    <div class="total">
+        Total Area: <span id="totalArea">0</span> Sqft
+    </div>
+</div>
+
+<script>
+function addRow() {
+    let table = document.getElementById("roomTable");
+    let row = table.insertRow(-1);
+
+    row.innerHTML = `
+        <td><input type="text" placeholder="Room"></td>
+        <td><input type="number" onchange="calculate()"></td>
+        <td><input type="number" onchange="calculate()"></td>
+        <td><input type="number" onchange="calculate()"></td>
+        <td><input type="number" onchange="calculate()"></td>
+        <td class="area">0</td>
+        <td><button class="delete-btn" onclick="deleteRow(this)">Delete</button></td>
+    `;
+}
+
+function calculate() {
+    let table = document.getElementById("roomTable");
+    let total = 0;
+
+    for (let i = 1; i < table.rows.length; i++) {
+        let cells = table.rows[i].cells;
+
+        let lf = parseFloat(cells[1].children[0].value) || 0;
+        let li = parseFloat(cells[2].children[0].value) || 0;
+        let wf = parseFloat(cells[3].children[0].value) || 0;
+        let wi = parseFloat(cells[4].children[0].value) || 0;
+
+        let length = lf + (li / 12);
+        let width = wf + (wi / 12);
+
+        let area = length * width;
+
+        cells[5].innerText = area.toFixed(2);
+        total += area;
+    }
+
+    document.getElementById("totalArea").innerText = total.toFixed(2);
+}
+
+function deleteRow(button) {
+    button.parentElement.parentElement.remove();
+    calculate();
+}
+</script>
+
+</body>
+</html>
